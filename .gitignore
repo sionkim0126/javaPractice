@@ -1,0 +1,20 @@
+# Eclipse
+.metadata/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# build
+build/
+bin/
+
+# Servers
+Servers/
