@@ -2,14 +2,14 @@ package sec01.ex01;
 
 import java.sql.Date;
 
-public class MemberV0 {
+public class MemberVO {
 	private String id;
 	private String pwd;
 	private String name;
 	private String email;
 	private Date joinDate;
 	
-	public MemberV0(){
+	public MemberVO(){
 		System.out.println("MemberV0 생성자 호출");
 	}
 	public String getId() {
