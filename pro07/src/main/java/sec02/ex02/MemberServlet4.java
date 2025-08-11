@@ -21,8 +21,7 @@ public class MemberServlet4 extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		doHandle(request, response);
 	}
 
 	/**
@@ -53,7 +52,7 @@ public class MemberServlet4 extends HttpServlet {
 			dao.addMember(vo);
 		}else if(command != null && command.equals("delMember")) {
 			String _id = request.getParameter("id");
-			/* dao.delMember(_id); */
+			dao.delMember(_id);
 		}
 		List<MemberVO4> list = dao.listMembers();
 		out.print("<html><body>");
