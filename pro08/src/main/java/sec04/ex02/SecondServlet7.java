@@ -29,7 +29,7 @@ public class SecondServlet7 extends HttpServlet {
 		out.print("<html><body>");
 		out.println("주소 : " + address);
 		out.println("<br>");
-		out.print("redirect를 이용한 바인딩 실습입니다.");
+		out.print("Dispatch를 이용한 바인딩 실습입니다.");
 		out.print("</body></html>");
 	}
 
