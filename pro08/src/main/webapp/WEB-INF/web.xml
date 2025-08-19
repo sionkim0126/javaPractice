@@ -26,4 +26,21 @@
   <param-name>menu_goods</param-name>
   <param-value>상품조회 상품등록 상품수정 상품삭제</param-value>
   </context-param>
+  
+  <servlet>
+  <servlet-name>sinit2</servlet-name>
+  <servlet-class>sec06.ex01.InitParamServlet2</servlet-class>
+  <init-param>
+  <param-name>email2</param-name>
+  <param-value>admin2@test.com</param-value>
+  </init-param>
+  <init-param>
+  <param-name>tel2</param-name>
+  <param-value>010-3333-4444</param-value>
+  </init-param>
+  </servlet>
+  <servlet-mapping>
+  <servlet-name>sinit2</servlet-name>
+  <url-pattern>/sInit3</url-pattern>
+  </servlet-mapping>
 </web-app>
