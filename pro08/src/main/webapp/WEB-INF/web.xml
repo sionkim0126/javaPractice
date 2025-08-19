@@ -43,4 +43,16 @@
   <servlet-name>sinit2</servlet-name>
   <url-pattern>/sInit3</url-pattern>
   </servlet-mapping>
+  
+  <!-- <servlet>
+  <servlet-name>loadConfig2</servlet-name>
+  <servlet-class>sec06.ex02.LoadAppConfig2</servlet-class>
+  <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+  <servlet-name>loadConfig2</servlet-name>
+  <url-pattern>/loadConfig2</url-pattern>
+  </servlet-mapping> -->
+  
+  
 </web-app>
