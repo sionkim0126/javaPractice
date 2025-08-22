@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>자바스크립트에서 쿠키 사용</title>
+<script type="text/javascript">
+window.onload = pageLoad; // 브라우저에 웹 페이지가 로드될 때 pageLoad()함수를 호출하여 실행
+function pageLoad(){
+	notShowPop = getCookieValue();
+	if(notShowPop != "true"){
+		window.open("popUp.html", "pop", "width=400, height=500, history=no, resizable=no, status=no, scrollbars=yes, menubar=no");
+		// getCookieValue로 가져온 쿠키 값이 ture가 아니면 팝업창을 나타냅니다.
+	}
+}
+function getCookieValue(){
+	var result = "false";
+	if(document.cookie != ""){
+		cookie = document.cookie.split(";"); //document의 cookie속성으로 쿠키정보를 문자열로 가져온 후 세미콜론으로 분리하려 각각의 쿠키를 얻습니다.
+		for(var i = 0; i < cookie.length; i++){
+			element = cookie[i].split("=");
+			value = element[0];
+			value = value.replace(/^\s*/,''); // 쿠키 이름 문자열의 공백 제거
+			if(value == "notShowPop"){
+				result = element[1];
+				//쿠키 이름이 notShowPop이면 해당하는 쿠키 값을 가져와 반환합니다.
+			}
+		}
+	}
+		return result;
+}
+function deleteCookie(){
+	document.cookie = "notShowPop=" + "false" + ";path=/; expires=-1"; //쿠키삭제 버튼 클릭시 호출 notShowPop쿠키값을 false로 설정
+}
+</script>
+</head>
+<body>
+	<form>
+		<input type="button" value="쿠키삭제" onclick="deleteCookie()">
+	</form>
+</body>
+</html>
