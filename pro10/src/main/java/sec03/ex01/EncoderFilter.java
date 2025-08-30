@@ -46,7 +46,12 @@ public class EncoderFilter extends HttpFilter implements Filter { // 사용자 �
 				+ "\n URI 정보 : " + pathinfo
 				+ "\n 물리적 경로 : " + realPath;
 		System.out.println(mesg);
+		long degin = System.currentTimeMillis(); // 요청 필터에서 요청 처리 전의 시각을 구합니다.
+		
 		chain.doFilter(request, response); // 다음 필터로 넘기는 작업
+		
+		long end = System.currentTimeMillis(); // 응답 필터에서 처리 후의 시각을 구합니다.
+		System.out.println("작업시간 : " +(end - degin) + "ms");
 	}
 
 	/**
