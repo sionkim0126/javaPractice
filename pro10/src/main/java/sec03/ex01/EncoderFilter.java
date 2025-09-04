@@ -15,8 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Servlet Filter implementation class EncoderFilter
  */
-@WebFilter("/*") //모든 요청이 필터를 거치게 합니다.
-public class EncoderFilter extends HttpFilter implements Filter { // 사용자 정의 필터는 반드시 Filter 인터페이스를 구현해야 합니다.
+/*
+ * @WebFilter("/*") //모든 요청이 필터를 거치게 합니다.
+ */public class EncoderFilter extends HttpFilter implements Filter { // 사용자 정의 필터는 반드시 Filter 인터페이스를 구현해야 합니다.
 	ServletContext context;
 	
 	public void init(FilterConfig fConfig) throws ServletException {
