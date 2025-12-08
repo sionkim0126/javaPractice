@@ -11,6 +11,6 @@
 <title>forward</title>
 </head>
 <body>
-	<jsp:forward page="member3.jsp"></jsp:forward>
+	<jsp:forward page="member4.jsp"></jsp:forward>
 </body>
 </html>
