@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>text box에 입력 내용 추력</title>
+</head>
+<body>
+	<input type="text" id="t_input">
+	<input type="button" value="입력하기" onclick="fn_process()"><br><br>
+	<div>
+		결과 : <br>
+		<input type="text" id="t_output" disabled>
+	</div>
+
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript">
+	function fn_process(){
+		var value= $("#t_input").val();
+		$("#t_output").val(value);
+		//val() 메서드는 해당 엘리먼트의 값을 가져오거나 엘리먼트로 값을 출력하는 기능을 합니다.
+	}
+</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style type="text/css">
+	img {
+		width: 200px;
+		height: 200px;
+	}
+</style>
+<title>Class 선택자 연습</title>
+</head>
+<body>
+	<div class="jazz"></div>
+	<div class="yellow"></div>
+	<input type="button" value="이미지 추가하기" onclick="addImage()">
+	
+	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+	<script type="text/javascript">
+	function addImage(){
+		  $(".jazz").html("<img src='../image/재즈클럽.png'>");
+		  $(".yellow").html("<img src='../image/yellowHi.png'>");
+		}
+	</script>
+</body>
+</html>
