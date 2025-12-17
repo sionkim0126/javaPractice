@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ajax JSON 실습</title>
+</head>
+<body>
+
+<input type="button" value="요청" onclick="fn_process()">
+<br><br>
+<div id="bookInfo"></div>
+
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script>
+	function fn_process() {
+		$.ajax({
+			type: "post",
+			url: "http://localhost:8090/pro16/ajaxTest3",
+			dataType: "json",
+
+			success: function(data) {
+				$("#bookInfo").empty();
+
+				$.each(data.books, function(index, book) {
+					$("#bookInfo").append(
+						"<p>" + book.title + "</p>" +
+						"<p>" + book.writer + "</p>" +
+						"<img src='" + book.image + "' /><hr>"
+					);
+				});
+			},
+
+			error: function() {
+				alert("에러 발생");
+			}
+		});
+	}
+</script>
+
+</body>
+</html>
