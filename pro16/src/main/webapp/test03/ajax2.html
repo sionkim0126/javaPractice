@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ajax 사용 실습2</title>
+</head>
+<body>
+<input type="button" value="요청" onclick="fn_process()">
+<br><br>
+<div id="bookInfo"></div>
+
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript">
+	function fn_process(){
+		$.ajax({
+			type : "post",
+			url : "http://localhost:8090/pro16/ajaxTest2",
+			dataType : "xml",
+			
+			success : function(info, textStatus){
+				$(info).find("book").each(function(){
+					var title = $(this).find("title").text();
+					var writer = $(this).find("writer").text();
+					var image = $(this).find("image").text();
+					$("#bookInfo").append(
+						"<p>" + title + "</p>" +
+						"<P>" + writer + "</p>" +
+						 "<img src='" + image + "' />"
+					);
+				});
+			},
+			error : function(textStatus){
+				alert("에러발생");
+			},
+			complete : function(tetxStatus){
+				alert("작업을 종료했습니다.");
+			}	
+		})
+	}
+</script>
+</body>
+</html>
