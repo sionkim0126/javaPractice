@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<input type="text" id="t_id"><input type="button" value="ID 중복체크하기" onclick="fn_process()" >
+	<br><br>
+	<div id="message"></div>
+
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript">
+	function fn_process(){
+		var _id = $("#t_id").val();
+		if(_id == ''){
+			alert("아이디를 입력하세요");
+			return;
+		}
+		$.ajax({
+			type : "post",
+			url : "http://localhost:8090/pro16/mem",
+			dataType : "text",
+			data : {id: _id },
+			success : function(data, textStatus){
+				if(data == 'usable'){
+					$("#message").text("사용할 수 있는 아이디 입니다.");
+					$("#btn_duplicate").prop("disabled", true);	
+				}else{
+					$("#message").text("사용할 수 없는 아이디 입니다.")
+				}
+			},
+			error : function(textStatus){
+				alert("에러발생");
+			}
+		})
+	}
+	
+</script>
+</body>
+</html>
