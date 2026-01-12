@@ -112,18 +112,18 @@ public class BoardDAO {
 		ArticleDTO article = new ArticleDTO();
 		try {
 			conn = dataFactory.getConnection();
-			String query = "select * from t_board where articleNO = ?";
+			String query = "select * from t_board where articleNO = ? ";
 			pstmt = conn.prepareStatement(query);
 			pstmt.setInt(1, articleNO);
 			ResultSet rs = pstmt.executeQuery();
 			while(rs.next()) {
-				int _articleNO = rs.getInt("articleNO");
-				int parentNO = rs.getInt("parentNO");
-				String title = rs.getString("title");
-				String content = rs.getString("centent");
-				String imageFileName = rs.getString("imageFileName");
-				String id = rs.getString("id");
-				Date writeDate = rs.getDate("writeDate");
+				int _articleNO = rs.getInt(1);
+				int parentNO = rs.getInt(2);
+				String title = rs.getString(3);
+				String content = rs.getString(4);
+				String imageFileName = rs.getString(5);
+				Date writeDate = rs.getDate(6);
+				String id = rs.getString(7);
 				
 				article.setArticleNO(_articleNO);
 				article.setParentNO(parentNO);
@@ -169,6 +169,48 @@ public class BoardDAO {
 			}
 			pstmt.executeUpdate();
 			
+			pstmt.close();
+			conn.close();
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public List<Integer> selectRemovedArticles(int articleNO){
+		List<Integer> articleNOList = new ArrayList<Integer>();
+		try {
+			conn = dataFactory.getConnection();
+			String query = "select articleNO from t_board "
+					+ "START WITH articleNO = ?"
+					+ " CONNECT BY PRIOR articleNO = parentNO";
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, articleNO);
+			ResultSet rs = pstmt.executeQuery();
+			while(rs.next()) {
+				int _articleNO = rs.getInt("articleNO");
+				articleNOList.add(_articleNO);
+			}
+			rs.close();
+			pstmt.close();
+			conn.close();
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return articleNOList;
+	}
+	
+	public void deleteArticle(int articleNO) {
+		try {
+			conn = dataFactory.getConnection();
+			String query = "DELETE FROM t_board WHERE articleNO IN("
+			        + " SELECT articleNO FROM t_board"
+			        + " START WITH articleNO = ?"
+			        + " CONNECT BY PRIOR articleNO = parentNO)";
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, articleNO);
+			pstmt.executeUpdate();
 			pstmt.close();
 			conn.close();
 			

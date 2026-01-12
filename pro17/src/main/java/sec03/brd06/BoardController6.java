@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -134,6 +135,21 @@ public class BoardController6 extends HttpServlet {
 						+ articleNO + "';" +" </script>");
 				return;
 				
+			}else if(action.equals("/removeArticle.do")) {
+				int articleNO = Integer.parseInt(request.getParameter("articleNO"));
+				List<Integer> articleNOList = boardService.moveArticle(articleNO);
+				for(int _articleNO : articleNOList) {
+					File imgDir = new File(ARTICLE_IMAGE_REPO + "\\" + _articleNO);
+					if(imgDir.exists()) {
+						FileUtils.deleteDirectory(imgDir);
+					}
+				}
+				PrintWriter pw = response.getWriter();
+				pw.print("<script>" + " alert('새글을 삭제했습니다.');" 
+						+ "location.href='" 
+						+ request.getContextPath()
+						+ "/board6/listArticles.do';" + "</script>");
+				return;
 			}
 			RequestDispatcher dispath = request.getRequestDispatcher(nextPage);
 			dispath.forward(request, response);
