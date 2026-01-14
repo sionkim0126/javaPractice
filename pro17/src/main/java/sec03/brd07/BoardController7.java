@@ -15,6 +15,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -27,9 +28,10 @@ import org.apache.commons.io.FileUtils;
 @WebServlet("/board7/*")
 public class BoardController7 extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static String ARTICLE_IMAGE_REPO = "E:\\Project\\필요모음\\upload_repo";
+	private static String ARTICLE_IMAGE_REPO = "E:\\Projects\\필요모음\\upload_repo";
 	BoardService boardService;
 	
+	HttpSession session;// 답글에 대한 부모 글 번호를 저장하기 위해 세션을 사용합니다.
 
 	/**
 	 * @see Servlet#init(ServletConfig)
@@ -61,7 +63,7 @@ public class BoardController7 extends HttpServlet {
 		System.out.println("action : " + action);
 		
 		try {
-			if(action == null && action.equals("/listArticles.do")) {
+			if(action == null || action.equals("/listArticles.do")) {
 				List<ArticleDTO> articlesList = new ArrayList<ArticleDTO>();
 				articlesList = boardService.listArticles();
 				request.setAttribute("articlesList", articlesList);
@@ -76,7 +78,7 @@ public class BoardController7 extends HttpServlet {
 				String title = articleMap.get("title");
 				String content = articleMap.get("content");
 				String imageFileName = articleMap.get("imageFileName");
-				
+				System.out.println(imageFileName);
 				ArticleDTO dto = new ArticleDTO();
 				
 				dto.setTitle(title);
@@ -89,7 +91,7 @@ public class BoardController7 extends HttpServlet {
 				int articleNO = boardService.addArticle(dto);
 				
 				if(imageFileName != null && imageFileName.length() != 0) {
-					File srcFile = new File(ARTICLE_IMAGE_REPO + "\\temp\\" + imageFileName);
+					File srcFile = new File(ARTICLE_IMAGE_REPO + "\\"+ "temp" + "\\" + imageFileName);
 					File desDir = new File(ARTICLE_IMAGE_REPO + "\\" + articleNO);
 					desDir.mkdirs();
 					FileUtils.moveFileToDirectory(srcFile, desDir, true);
@@ -101,7 +103,7 @@ public class BoardController7 extends HttpServlet {
 					return;
 				}else {
 					PrintWriter pw = response.getWriter();
-					pw.print("<script>" + " alert('이미지파일 에러 발생했습니다.');" 
+					pw.print("<script>" + " alert('이미지파일 없이 추가했습니다.');" 
 							+ "location.href='" 
 							+ request.getContextPath()
 							+ "/board7/listArticles.do';" + "</script>");
@@ -144,7 +146,7 @@ public class BoardController7 extends HttpServlet {
 				PrintWriter pw = response.getWriter();
 				pw.print("<script>" + " alert('글을 수정했습니다.');" + " location.href='"
 						+ request.getContextPath()
-						+ "/board6/viewArticle.do?articleNO="
+						+ "/board7/viewArticle.do?articleNO="
 						+ articleNO + "';" +" </script>");
 				return;
 			}else if(action.equals("/removeArticle.do")) {
@@ -160,7 +162,47 @@ public class BoardController7 extends HttpServlet {
 				pw.print("<script>" + " alert('새글을 삭제했습니다.');" 
 						+ "location.href='" 
 						+ request.getContextPath()
-						+ "/board6/listArticles.do';" + "</script>");
+						+ "/board7/listArticles.do';" + "</script>");
+				return;
+			}else if(action.equals("/replyForm.do")) {
+				int parentNO = Integer.parseInt(request.getParameter("parentNO"));
+				session = request.getSession();
+				session.setAttribute("parentNO", parentNO);
+				nextPage = "/board07/replyForm.jsp";
+				
+			}else if(action.equals("/addReply.do")) {
+				session = request.getSession();
+				int parentNO = (Integer)session.getAttribute("parentNO");
+				session.removeAttribute("parentNO");
+				
+				Map<String, String> articleMap = upload(request, response);
+				String title = articleMap.get("title");
+				String content = articleMap.get("content");
+				String imageFileName = articleMap.get("imageFileName");
+				
+				ArticleDTO article = new ArticleDTO();
+				article.setParentNO(parentNO);
+				article.setTitle(title);
+				article.setContent(content);
+				article.setImageFileName(imageFileName);
+				
+				article.setId("lee");//일단 lee로 변경할 수 있음 좋을 듯 session으로 아이디 정도 저장하는 걸로 하면 좋을듯
+				
+				int articleNO = boardService.addReply(article);
+				
+				if(imageFileName != null && imageFileName.length() != 0) {
+					File srcFile = new File(ARTICLE_IMAGE_REPO + "\\temp\\" + imageFileName);
+					File desDir = new File(ARTICLE_IMAGE_REPO + "\\" + articleNO);
+					desDir.mkdirs();
+					FileUtils.moveFileToDirectory(srcFile, desDir, true);
+				}
+					
+				PrintWriter pw = response.getWriter();
+				pw.print("<script>" + " alert('답글을 추가했습니다.');"
+						+ " location.href='"
+						+ request.getContextPath()
+						+ "/board7/viewArticle.do?articleNO="
+						+ articleNO + "';" +" </script>");
 				return;
 			}
 			
@@ -209,8 +251,9 @@ public class BoardController7 extends HttpServlet {
 							//혹시나 브라우저가 다를 경우
 						}
 						String fileName = fileItem.getName().substring(idx + 1);
-						articleMap.put(fileItem.getName(), fileName);
-						File uploadFile = new File(ARTICLE_IMAGE_REPO + "\\temp\\" + fileName);
+						articleMap.put(fileItem.getFieldName(), fileName);
+						File uploadFile = new File(currentDirPath + "\\temp\\" + fileName);
+						
 						fileItem.write(uploadFile);
 						//일단 임시파일에 이미지이름으로 저장
 						// multipart 요청으로 전송된 파일 데이터를 서버의 지정된 경로(temp)에 물리적으로 저장한다.

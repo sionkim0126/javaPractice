@@ -31,11 +31,11 @@ public class BoardDAO {
 		List<ArticleDTO> articlesList = new ArrayList<ArticleDTO>();
 		try {
 			conn = dataFactory.getConnection();
-			String query = "select LEVEL, articleNO, parentNO, title, content, id, writeDate"
-					+ "from t_board "
-					+ "start with parentNO = 0 "
-					+ "connect by prior articeNO = parentNO "
-					+ "order siblings by articleNO desc ";
+			String query = "SELECT LEVEL, articleNO, parentNO, title, content, id, writeDate"
+					+ " from t_board"
+					+ " START WITH parentNO = 0"
+					+ " CONNECT BY PRIOR articleNO = parentNO"
+					+ " ORDER SIBLINGS BY articleno DESC";
 			System.out.println("query :" + query);
 			pstmt = conn.prepareStatement(query);
 			ResultSet rs = pstmt.executeQuery();
