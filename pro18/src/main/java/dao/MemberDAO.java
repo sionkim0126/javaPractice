@@ -10,10 +10,8 @@ import javax.sql.DataSource;
 
 import dto.MemberDTO;
 
-public class MemberDAO {
+public class MemberDAO extends BaseDAO {
 	private DataSource dataFactory;
-	private Connection conn;
-	private PreparedStatement pstmt;
 	
 	public MemberDAO() {
 		try {
@@ -27,6 +25,9 @@ public class MemberDAO {
 	}
 	
 	public void addMember(MemberDTO member) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
 		try {
 			String id = member.getId();
 			String pwd = member.getPwd();
@@ -44,9 +45,6 @@ public class MemberDAO {
 			
 			pstmt.executeUpdate();
 			
-			pstmt.close();
-			conn.close();
-			
 		}catch (Exception e) {
 			e.printStackTrace();
 		}finally {
@@ -54,28 +52,29 @@ public class MemberDAO {
 		}
 	}
 	
-	//실무 사용
-	protected final void close(ResultSet rs, PreparedStatement pstmt, Connection conn) {
+	public MemberDTO login(String _id, String _pwd) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		MemberDTO member = null;
 		try {
-			if(rs != null) 
-				rs.close();
+			conn = dataFactory.getConnection();
+			String query = "SELECT * FROM t_member WHERE id = ? AND pwd = ?";
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, _id);
+			pstmt.setString(2, _pwd);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				//if를 쓰는 이유는 한명의 결과만 가져오는 것이 정상
+                member = new MemberDTO();
+                member.setId(rs.getString("id"));
+                member.setPwd(rs.getString("pwd"));
+            }
 		}catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			close(rs, pstmt, conn);
 		}
-		
-		try {
-			if(pstmt != null)
-				pstmt.close();
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		try {
-			if(conn != null)
-				conn.close();
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
+		return member;
 	}
-
 }

@@ -12,4 +12,9 @@ public class MemberService {
 	public void addMember(MemberDTO member) {
 		memberDAO.addMember(member);
 	}
+	
+	public MemberDTO login(String id, String pwd) {
+		MemberDTO member = memberDAO.login(id, pwd);
+		return member;
+	}
 }

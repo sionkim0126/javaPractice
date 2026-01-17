@@ -19,7 +19,8 @@ import service.MemberService;
 @WebServlet("/Member/*")
 public class MemberController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	HttpSession session;
+	/* HttpSession session; */
+	//서블릿은 싱글톤이다.필드로 두면 동시 요청 시 세션 꼬인다. 반드시 메서드 내부에서만 사용해라.
 	MemberService memberService;
 
     public MemberController() {
@@ -75,7 +76,22 @@ public class MemberController extends HttpServlet {
 				
 				request.setAttribute("msg", "addMember");
 				//월래는 listMembers.jsp로 넘어가서 메세지 전송 이걸 listArticles.do로 이동
-				nextPage = "/Board/listArticles.do";
+				nextPage = "/member/login.jsp";
+				
+			}else if(action.equals("/login.do")) {
+				String id = request.getParameter("id");
+				String pwd = request.getParameter("pwd");
+				
+				MemberDTO member = memberService.login(id, pwd);
+				
+				if(member != null) {
+					HttpSession session = request.getSession();
+					session.setAttribute("loginMember", member);
+					nextPage = "/Board/listArticles.do";
+				}else {
+					request.setAttribute("loginError", "아이디 또는 비밀번호가 틀립니다.");
+					nextPage = "/member/loginForm.jsp";
+				}
 				
 			}
 			

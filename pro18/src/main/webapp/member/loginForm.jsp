@@ -14,7 +14,7 @@
 </head>
 <body>
 	<h1 style="text-align:center">게시판 로그인 창</h1>
-	  <form method="post" action="${contextPath }/member/login.do">
+	  <form method="post" action="${contextPath }/Member/login.do">
 		<table border="1" align="center">
 			<tr  bgcolor="lightgreen">
 				<td colspan="2" align="center">
@@ -44,6 +44,9 @@
 				</td>
 			</tr>
 		</table>
+	  	 <c:if test="${not empty loginError}">
+        	<p align="center" style="color:red;">${loginError}</p>
+    	</c:if>
 	  </form>
 
 <script  src="https://code.jquery.com/jquery-latest.min.js"></script>
