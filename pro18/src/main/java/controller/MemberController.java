@@ -58,7 +58,7 @@ public class MemberController extends HttpServlet {
 		System.out.println("action :" + action);
 		
 		try {
-			if(action == null) {
+			if(action.equals("/loginForm.do")) {
 				nextPage = "/member/loginForm.jsp";
 				
 			}else if(action.equals("/memberForm.do")) {

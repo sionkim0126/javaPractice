@@ -37,6 +37,7 @@ public class MemberDAO extends BaseDAO {
 			conn = dataFactory.getConnection();
 			String query = "INSERT INTO t_member(id, pwd, name, email, joinDate)"
 					+ " VALUES(?, ?, ?, ?, sysdate)";
+			System.out.println("query :" + query);
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, id);
 			pstmt.setString(2, pwd);
@@ -60,6 +61,7 @@ public class MemberDAO extends BaseDAO {
 		try {
 			conn = dataFactory.getConnection();
 			String query = "SELECT * FROM t_member WHERE id = ? AND pwd = ?";
+			System.out.println("query :" + query);
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, _id);
 			pstmt.setString(2, _pwd);
