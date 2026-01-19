@@ -22,6 +22,9 @@
 <title>글 목록창</title>
 </head>
 <body>
+	<form action="${contextPath }/Member/logout.do" method="post">
+		<button type="submit">로그아웃</button>
+	</form>
 	<table border="1" width="80%" align="center">
 		<tr height="10px" align="center" bgcolor="lightgreen">
 			<td>글 번호</td>

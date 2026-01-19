@@ -76,6 +76,9 @@ public class MemberController extends HttpServlet {
 				
 				request.setAttribute("msg", "addMember");
 				//월래는 listMembers.jsp로 넘어가서 메세지 전송 이걸 listArticles.do로 이동
+				//아직 msg기능 script추가 안함 01.19
+				//01.19 일단 addMember는 추가함 근데 listArticles.jsp에서 
+				//정보 수정을 넣어서 mod를 추가하고 admin으로 로그인했을 del기능 추가해야함. 
 				nextPage = "/member/login.jsp";
 				
 			}else if(action.equals("/login.do")) {
@@ -87,12 +90,20 @@ public class MemberController extends HttpServlet {
 				if(member != null) {
 					HttpSession session = request.getSession();
 					session.setAttribute("loginMember", member);
-					nextPage = "/Board/listArticles.do";
+					response.sendRedirect(request.getContextPath() + "/Board/listArticles.do");
+					return;
 				}else {
 					request.setAttribute("loginError", "아이디 또는 비밀번호가 틀립니다.");
 					nextPage = "/member/loginForm.jsp";
 				}
 				
+			}else if(action.equals("/logout.do")) {
+				HttpSession session = request.getSession(false);
+				if(session != null) {
+					session.invalidate();
+				}
+				response.sendRedirect(request.getContextPath() + "/member/loginForm.jsp");
+				return;
 			}
 			
 			RequestDispatcher disPath = request.getRequestDispatcher(nextPage);

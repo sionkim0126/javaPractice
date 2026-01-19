@@ -27,12 +27,18 @@ public class LoginCheckFilter extends HttpFilter {
         HttpServletResponse resp = (HttpServletResponse) response;
 
         HttpSession session = req.getSession(false);
+        //Q: why getSession(false)? why false?
 
         // 로그인 여부 확인
         if (session == null || session.getAttribute("loginMember") == null) {
             resp.sendRedirect(req.getContextPath() + "/member/loginForm.jsp");
             return;
         }
+        // 캐시 방지
+        
+        resp.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+        resp.setHeader("Pragma", "no-cache");
+        resp.setDateHeader("Expires", 0);
 
         // 로그인 되어 있으면 컨트롤러로 이동
         chain.doFilter(request, response);

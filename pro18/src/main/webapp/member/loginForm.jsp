@@ -10,6 +10,15 @@
 <head>
 <meta charset="UTF-8">
 <c:set  var="contextPath" value="${pageContext.request.contextPath }" />
+<c:choose>
+	<c:when test='${msg == "addMember" }'>
+		<script type="text/javascript">
+			window.onload = function(){
+				alert()
+			}
+		</script>
+	</c:when>
+</c:choose>
 <title>로그인 창</title>
 </head>
 <body>
