@@ -62,5 +62,54 @@ public class BoardDAO extends BaseDAO {
 		}
 		return articlesList;
 	}
-
+	
+	public int insertNewArticle(ArticleDTO article) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int articleNO = selectArticleNO();
+		try {			
+			int parentNO = article.getParentNO();
+			String id = article.getId();
+			String title = article.getTitle();
+			String content = article.getContent();
+			String imageFileName = article.getImageFileName();
+		
+			conn = dataFactory.getConnection();
+			String query = "INSERT INTO T_BOARD(articleNO, parentNO, title, content, imageFileName, id)"
+					+ " VALUES(?, ?, ?, ?, ?, ?)";
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, articleNO);
+			pstmt.setInt(2, parentNO);
+			pstmt.setString(3, title);
+			pstmt.setString(4, content);
+			pstmt.setString(5, imageFileName);
+			pstmt.setString(6, id);
+			pstmt.executeUpdate();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			close(null, pstmt, conn);
+		}
+		return articleNO;
+	}
+	
+	private int selectArticleNO() {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = dataFactory.getConnection();
+			String query = "SELECT MAX(articleNO) FROM t_board";
+			pstmt = conn.prepareStatement(query);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				return( rs.getInt(1) + 1);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			close(rs, pstmt, conn);
+		}
+		return 0;
+	}
 }

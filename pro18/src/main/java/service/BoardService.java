@@ -16,4 +16,8 @@ public class BoardService {
 		List<ArticleDTO> articlesList = boardDAO.selectAllArticles();
 		return articlesList;
 	}
+	
+	public int addArticle(ArticleDTO article) {
+		return boardDAO.insertNewArticle(article);
+	}
 }

@@ -54,11 +54,11 @@
 										<span style="padding-left: 20px;"></span>
 									</c:forEach>
 									<span style="font-size: 12px;">[답변]</span>
-									<a class="cls1" href="${contextPath }/board7/viewArticle.do?
+									<a class="cls1" href="${contextPath }/Board/viewArticle.do?
 									articleNO=${article.articleNO}">${article.title }</a>
 								</c:when>
 								<c:otherwise>
-									<a class="cls1" href="${contextPath }/board7/viewArticle.do?
+									<a class="cls1" href="${contextPath }/Board/viewArticle.do?
 									articleNO=${article.articleNO}">${article.title }</a>
 								</c:otherwise>
 							</c:choose>
@@ -71,7 +71,7 @@
 			</c:otherwise>
 		</c:choose>
 	</table>
-	<a class="cls1" href="${contextPath }/board7/articleForm.do">
+	<a class="cls1" href="${contextPath }/Board/articleForm.do">
 		<p class="cls2">글쓰기</p>
 	</a>
 </body>

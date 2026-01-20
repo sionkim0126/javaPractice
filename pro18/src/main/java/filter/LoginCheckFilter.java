@@ -31,7 +31,7 @@ public class LoginCheckFilter extends HttpFilter {
 
         // 로그인 여부 확인
         if (session == null || session.getAttribute("loginMember") == null) {
-            resp.sendRedirect(req.getContextPath() + "/member/loginForm.jsp");
+            resp.sendRedirect(req.getContextPath() + "/Member/loginForm.do");
             return;
         }
         // 캐시 방지

@@ -79,7 +79,7 @@ public class MemberController extends HttpServlet {
 				//아직 msg기능 script추가 안함 01.19
 				//01.19 일단 addMember는 추가함 근데 listArticles.jsp에서 
 				//정보 수정을 넣어서 mod를 추가하고 admin으로 로그인했을 del기능 추가해야함. 
-				nextPage = "/member/login.jsp";
+				nextPage = "/member/loginForm.jsp";
 				
 			}else if(action.equals("/login.do")) {
 				String id = request.getParameter("id");
@@ -92,6 +92,7 @@ public class MemberController extends HttpServlet {
 					session.setAttribute("loginMember", member);
 					response.sendRedirect(request.getContextPath() + "/Board/listArticles.do");
 					return;
+					
 				}else {
 					request.setAttribute("loginError", "아이디 또는 비밀번호가 틀립니다.");
 					nextPage = "/member/loginForm.jsp";
