@@ -109,9 +109,16 @@ public class BoardController extends HttpServlet {
 							+ "/Board/listArticles.do';" + "</script>");
 					return;
 				}
+			}else if(action.equals("/viewArticle.do")) {
+				int articleNO = Integer.parseInt(request.getParameter("articleNO"));
+				ArticleDTO article = boardService.viewArticle(articleNO);
+				request.setAttribute("article", article);
+				nextPage = "/board/viewArticle.jsp";
+				
 			}
-				RequestDispatcher dispatch = request.getRequestDispatcher(nextPage);
-				dispatch.forward(request, response);
+			
+			RequestDispatcher dispatch = request.getRequestDispatcher(nextPage);
+			dispatch.forward(request, response);
 							
 			}catch (Exception e) {
 				e.printStackTrace();

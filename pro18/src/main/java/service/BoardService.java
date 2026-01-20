@@ -20,4 +20,9 @@ public class BoardService {
 	public int addArticle(ArticleDTO article) {
 		return boardDAO.insertNewArticle(article);
 	}
+	
+	public ArticleDTO viewArticle(int articleNO) {
+		ArticleDTO article = boardDAO.selectArticle(articleNO);
+		return article; 
+	}
 }

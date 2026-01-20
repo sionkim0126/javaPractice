@@ -40,7 +40,7 @@ public class BoardDAO extends BaseDAO {
 					+ " START WITH parentNO = 0"
 					+ " CONNECT BY PRIOR articleNO = parentNO"
 					+ " ORDER SIBLINGS BY articleno DESC";
-			System.out.println("query :" + query);
+			/* System.out.println("query :" + query); */
 			pstmt = conn.prepareStatement(query);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
@@ -77,6 +77,7 @@ public class BoardDAO extends BaseDAO {
 			conn = dataFactory.getConnection();
 			String query = "INSERT INTO T_BOARD(articleNO, parentNO, title, content, imageFileName, id)"
 					+ " VALUES(?, ?, ?, ?, ?, ?)";
+			/* System.out.println("query :" + query); */
 			pstmt = conn.prepareStatement(query);
 			pstmt.setInt(1, articleNO);
 			pstmt.setInt(2, parentNO);
@@ -100,6 +101,7 @@ public class BoardDAO extends BaseDAO {
 		try {
 			conn = dataFactory.getConnection();
 			String query = "SELECT MAX(articleNO) FROM t_board";
+			/* System.out.println("query :" + query); */
 			pstmt = conn.prepareStatement(query);
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
@@ -111,5 +113,35 @@ public class BoardDAO extends BaseDAO {
 			close(rs, pstmt, conn);
 		}
 		return 0;
+	}
+	
+	public ArticleDTO selectArticle(int articleNO) {
+		ArticleDTO article = new ArticleDTO();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = dataFactory.getConnection();
+			String query = "SELECT * FROM t_board where articleNO = ?";
+			/* System.out.println("query :" + query); */
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, articleNO);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				article.setArticleNO(rs.getInt("ARTICLENO"));
+				article.setParentNO(rs.getInt("PARENTNO"));
+				article.setTitle(rs.getString("TITLE"));
+				article.setContent(rs.getString("CONTENT"));
+				article.setImageFileName(rs.getString("IMAGEFILENAME"));
+				article.setWriteDate(rs.getDate("WRITEDATE"));
+				article.setId(rs.getString("ID"));
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			close(rs, pstmt, conn);
+		}
+		return article;
 	}
 }

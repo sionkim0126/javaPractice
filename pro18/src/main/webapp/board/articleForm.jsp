@@ -50,7 +50,7 @@
 		}
 	}
 	function backToList(obj){
-		obj.action = "${contextPath}/board7/listArticles.do";
+		obj.action = "${contextPath}/Board/listArticles.do";
 		obj.submit();
 	}
 </script>
