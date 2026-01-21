@@ -85,6 +85,7 @@ public class BoardController extends HttpServlet {
 				ArticleDTO article = new ArticleDTO();
 				article.setTitle(title);
 				article.setContent(content);
+				article.setImageFileName(imageFileName);
 				article.setId(id);
 				article.setParentNO(0);
 				
@@ -115,6 +116,60 @@ public class BoardController extends HttpServlet {
 				request.setAttribute("article", article);
 				nextPage = "/board/viewArticle.jsp";
 				
+			}else if(action.equals("/modArticle.do")) {
+				//Controller에서도 추가 session 검증
+				//필터에서 막고, 컨트롤러에서도 최소 검증
+				HttpSession session = request.getSession(false);
+				if (session == null) {
+				    response.sendRedirect(request.getContextPath() + "/Member/loginForm.do");
+				    return;
+				}
+				//Controller에서도 추가 session 검증
+				MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
+				String loginId = loginMember.getId();
+				Map<String, String> articleMap = upload(request, response);
+				int articleNO = Integer.parseInt(articleMap.get("articleNO"));
+				//수정권한 확인 과정
+				String writer = boardService.getArticleWriter(articleNO);
+				if (writer == null || !loginId.equals(writer)) {
+					PrintWriter pw = response.getWriter();
+				    pw.print("<script>");
+				    pw.print("alert('글을 수정할 권한이 없습니다.');");
+				    pw.print("location.href='" + request.getContextPath()
+				            + "/Board/viewArticle.do?articleNO=" + articleNO + "';");
+				    pw.print("</script>");
+				    return;
+				}
+				//수정권한 확인 과정
+				String title = articleMap.get("title");
+				String content = articleMap.get("content");
+				String imageFileName = articleMap.get("imageFileName");
+				
+				ArticleDTO article = new ArticleDTO();
+				article.setArticleNO(articleNO);
+				article.setTitle(title);
+				article.setContent(content);
+				article.setImageFileName(imageFileName);
+				
+				boardService.modArticle(article);
+				
+				if(imageFileName != null && imageFileName.length() != 0) {
+					String originalFileName = articleMap.get("originalFileName");
+					File srcFile = new File(ARTICLE_IMAGE_REPO + "\\temp\\" + imageFileName);
+					
+					File destDir = new File(ARTICLE_IMAGE_REPO + "\\" + articleNO);
+					destDir.mkdirs();
+					FileUtils.moveFileToDirectory(srcFile, destDir, true);
+					File oldFile = new File(ARTICLE_IMAGE_REPO + "\\" + articleNO + "\\" + originalFileName);
+					oldFile.delete();
+				
+				}
+				PrintWriter pw = response.getWriter();
+				pw.print("<script>" + " alert('글을 수정했습니다.');" + " location.href='"
+						+ request.getContextPath()
+						+ "/Board/viewArticle.do?articleNO="
+						+ articleNO + "';" +" </script>");
+				return;
 			}
 			
 			RequestDispatcher dispatch = request.getRequestDispatcher(nextPage);

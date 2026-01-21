@@ -144,4 +144,63 @@ public class BoardDAO extends BaseDAO {
 		}
 		return article;
 	}
+	
+	public String selectArticleWriter(int articleNO) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String writer = null;
+		try {
+			conn = dataFactory.getConnection();
+			String query = "SELECT ID FROM t_board WHERE ARTICLENO = ?";
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, articleNO);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				writer = rs.getString(1);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			close(rs, pstmt, conn);
+		}
+		return writer;
+	}
+	
+	public void updateArticle(ArticleDTO article) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			String title = article.getTitle();
+			String content = article.getContent();
+			String imageFileName = article.getImageFileName();
+			int articleNO = article.getArticleNO();
+			
+			conn = dataFactory.getConnection();
+			String query = "UPDATE t_board set TITLE = ?, CONTENT =?";
+			if(imageFileName != null && imageFileName.length() != 0) {
+				query += ", IMAGEFILENAME = ?"
+						+ " WHERE ARTICLENO = ?";
+			}else {
+				query += " WHERE ARTICLENO = ?";
+			}
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, title);
+			pstmt.setString(2, content);
+			if(imageFileName != null && imageFileName.length() != 0) {
+				pstmt.setString(3, imageFileName);
+				pstmt.setInt(4, articleNO);
+			}else {
+				pstmt.setInt(3, articleNO);
+			}
+			pstmt.executeUpdate();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			close(null, pstmt, conn);
+		}
+	}
+	
+	
 }

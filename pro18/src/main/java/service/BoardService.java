@@ -25,4 +25,12 @@ public class BoardService {
 		ArticleDTO article = boardDAO.selectArticle(articleNO);
 		return article; 
 	}
+	
+	public String getArticleWriter(int articleNO) {
+	    return boardDAO.selectArticleWriter(articleNO);
+	}
+	
+	public void modArticle(ArticleDTO article) {
+		boardDAO.updateArticle(article);
+	}
 }
