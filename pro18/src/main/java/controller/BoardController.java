@@ -170,6 +170,41 @@ public class BoardController extends HttpServlet {
 						+ "/Board/viewArticle.do?articleNO="
 						+ articleNO + "';" +" </script>");
 				return;
+			}else if(action.equals("/removeArticle.do")) {
+				//Controller에서도 추가 session 검증
+				HttpSession session = request.getSession(false);
+				if (session == null) {
+				    response.sendRedirect(request.getContextPath() + "/Member/loginForm.do");
+				    return;
+				}
+				//Controller에서도 추가 session 검증
+				MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
+				String loginId = loginMember.getId();
+				int articleNO = Integer.parseInt(request.getParameter("articleNO"));
+				String writer = boardService.getArticleWriter(articleNO);
+				if (writer == null || !loginId.equals(writer)) {
+					PrintWriter pw = response.getWriter();
+				    pw.print("<script>");
+				    pw.print("alert('글을 삭제할 권한이 없습니다.');");
+				    pw.print("location.href='" + request.getContextPath()
+				            + "/Board/viewArticle.do?articleNO=" + articleNO + "';");
+				    pw.print("</script>");
+				    return;
+				}else if(loginId.equals("admin") || loginId.equals(writer)) {
+					List<Integer> articleNOList = boardService.moveArticle(articleNO);
+					for(int _articleNO : articleNOList) {
+						File imgDir = new File(ARTICLE_IMAGE_REPO + "\\" + _articleNO);
+						if(imgDir.exists()) {
+							FileUtils.deleteDirectory(imgDir);
+						}
+					}
+					PrintWriter pw = response.getWriter();
+					pw.print("<script>" + " alert('새글을 삭제했습니다.');" 
+							+ "location.href='" 
+							+ request.getContextPath()
+							+ "/Board/listArticles.do';" + "</script>");
+					return;
+				}
 			}
 			
 			RequestDispatcher dispatch = request.getRequestDispatcher(nextPage);

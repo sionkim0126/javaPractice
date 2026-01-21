@@ -181,7 +181,9 @@
    	<c:if test="${loginMember.id == article.id }">
 	    <input type=button value="수정하기" onClick="fn_enable(this.form)">
    	</c:if>
+   	<c:if test='${loginMember.id == article.id || loginMember.id == "admin" }'>
 	    <input type=button value="삭제하기" onClick="fn_remove_article('${contextPath}/Board/removeArticle.do', ${article.articleNO})">
+   	</c:if>
 	    <input type=button value="리스트로 돌아가기"  onClick="backToList(this.form)">
 	     <%-- <input type=button value="답글쓰기"  onClick="fn_reply_form('${contextPath}/Board/replyForm.do', ${article.articleNO})"> --%>
 	     <a href="${contextPath}/Board/replyForm.do?parentNO=${article.articleNO}">답글쓰기</a>

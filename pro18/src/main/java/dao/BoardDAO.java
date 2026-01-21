@@ -202,5 +202,48 @@ public class BoardDAO extends BaseDAO {
 		}
 	}
 	
+	public List<Integer> selectRemovedArticles(int _articleNO){
+		List<Integer> articleNOList = new ArrayList<Integer>();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = dataFactory.getConnection();
+			String query = "SELECT articleNO FROM t_board "
+					+ "START WITH articleNO = ? "
+					+ "CONNECT BY PRIOR articleNO = parentNO";
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, _articleNO);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				int articleNO = rs.getInt("articleNO");
+				articleNOList.add(articleNO);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			close(rs, pstmt, conn);
+		}
+		return articleNOList;
+	}
+	
+	public void deleteArticle(int articleNO) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = dataFactory.getConnection();
+			String query = "DELETE FROM t_board WHERE articleNO IN("
+					+ " SELECT articleNO FROM t_board "
+					+ "START WITH articleNO = ? "
+					+ "CONNECT BY PRIOR articleNO = parentNO)";
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, articleNO);
+			pstmt.executeUpdate();			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			close(null, pstmt, conn);
+		}
+	}
 	
 }

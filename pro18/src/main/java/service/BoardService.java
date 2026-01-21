@@ -33,4 +33,10 @@ public class BoardService {
 	public void modArticle(ArticleDTO article) {
 		boardDAO.updateArticle(article);
 	}
+	
+	public List<Integer>moveArticle(int articleNO){
+		List<Integer> articleNOList = boardDAO.selectRemovedArticles(articleNO);
+		boardDAO.deleteArticle(articleNO);
+		return articleNOList;
+	}
 }
