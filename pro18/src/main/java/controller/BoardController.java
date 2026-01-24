@@ -205,6 +205,51 @@ public class BoardController extends HttpServlet {
 						+ request.getContextPath()
 						+ "/Board/listArticles.do';" + "</script>");
 				return;
+			}else if(action.equals("/replyForm.do")) {
+				int parentNO = Integer.parseInt(request.getParameter("parentNO"));
+				//session에 추가하지 않음
+				request.setAttribute("parentNO", parentNO);
+				nextPage = "/board/replyForm.jsp";
+				
+			}else if(action.equals("/addReply.do")) {
+				//Controller에서도 추가 session 검증
+				//필터에서 막고, 컨트롤러에서도 최소 검증
+				HttpSession session = request.getSession(false);
+				if (session == null) {
+				    response.sendRedirect(request.getContextPath() + "/Member/loginForm.do");
+				    return;
+				}
+				MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
+		
+				Map<String, String> articleMap = upload(request, response);
+				String title = articleMap.get("title");
+				String content = articleMap.get("content");
+				int parentNO = Integer.parseInt(articleMap.get("parentNO"));
+				String imageFileName = articleMap.get("imageFileName");
+				
+				ArticleDTO article = new ArticleDTO();
+				article.setParentNO(parentNO);
+				article.setTitle(title);
+				article.setContent(content);
+				article.setId(loginMember.getId());
+				article.setImageFileName(imageFileName);
+				
+				int articleNO = boardService.addReply(article);
+				
+				if(imageFileName != null && imageFileName.length() != 0) {
+					File srcFile = new File(ARTICLE_IMAGE_REPO + "\\temp\\" + imageFileName);
+					File desDir = new File(ARTICLE_IMAGE_REPO + "\\" + articleNO);
+					desDir.mkdirs();
+					FileUtils.moveFileToDirectory(srcFile, desDir, true);
+				}
+					
+				PrintWriter pw = response.getWriter();
+				pw.print("<script>" + " alert('답글을 추가했습니다.');"
+						+ " location.href='"
+						+ request.getContextPath()
+						+ "/Board/viewArticle.do?articleNO="
+						+ articleNO + "';" +" </script>");
+				return;
 			}
 			RequestDispatcher dispatch = request.getRequestDispatcher(nextPage);
 			dispatch.forward(request, response);
