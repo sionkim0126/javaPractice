@@ -182,7 +182,8 @@ public class BoardController extends HttpServlet {
 				String loginId = loginMember.getId();
 				int articleNO = Integer.parseInt(request.getParameter("articleNO"));
 				String writer = boardService.getArticleWriter(articleNO);
-				if (writer == null || !loginId.equals(writer)) {
+				// 권한 체크
+				if (writer == null || (!loginId.equals("admin") && !loginId.equals(writer))) {
 					PrintWriter pw = response.getWriter();
 				    pw.print("<script>");
 				    pw.print("alert('글을 삭제할 권한이 없습니다.');");
@@ -190,23 +191,21 @@ public class BoardController extends HttpServlet {
 				            + "/Board/viewArticle.do?articleNO=" + articleNO + "';");
 				    pw.print("</script>");
 				    return;
-				}else if(loginId.equals("admin") || loginId.equals(writer)) {
-					List<Integer> articleNOList = boardService.moveArticle(articleNO);
-					for(int _articleNO : articleNOList) {
-						File imgDir = new File(ARTICLE_IMAGE_REPO + "\\" + _articleNO);
-						if(imgDir.exists()) {
-							FileUtils.deleteDirectory(imgDir);
-						}
-					}
-					PrintWriter pw = response.getWriter();
-					pw.print("<script>" + " alert('새글을 삭제했습니다.');" 
-							+ "location.href='" 
-							+ request.getContextPath()
-							+ "/Board/listArticles.do';" + "</script>");
-					return;
 				}
+				List<Integer> articleNOList = boardService.moveArticle(articleNO);
+				for(int _articleNO : articleNOList) {
+					File imgDir = new File(ARTICLE_IMAGE_REPO + "\\" + _articleNO);
+					if(imgDir.exists()) {
+						FileUtils.deleteDirectory(imgDir);
+					}
+				}
+				PrintWriter pw = response.getWriter();
+				pw.print("<script>" + " alert('새글을 삭제했습니다.');" 
+						+ "location.href='" 
+						+ request.getContextPath()
+						+ "/Board/listArticles.do';" + "</script>");
+				return;
 			}
-			
 			RequestDispatcher dispatch = request.getRequestDispatcher(nextPage);
 			dispatch.forward(request, response);
 							
